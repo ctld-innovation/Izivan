@@ -1,0 +1,1665 @@
+openapi: 3.0.1
+info:
+  title: IZIVAN API
+  contact:
+    url: https://izivan.co
+    email: hello@izivan.co
+  version: 1.0.0
+servers:
+- url: https://izivan.co/api/1.1/wf
+security:
+- token: []
+tags:
+- name: Authentication
+  description: Use this to get the token for authentication
+- name: Available Days
+  description: Use this to check available days
+- name: Estimates
+  description: Operations related to Estimates
+- name: Data
+  description: Use this to get all needed data to send an Estimate
+paths:
+  /next-available-days:
+    get:
+      tags:
+      - Available Days
+      description: "Returns available dates, hours, slots and holidays for a truck\
+        \ type starting from a give date"
+      parameters:
+      - name: startDate
+        in: query
+        description: Query parameter startDate (yyyy-mm-dd HH:MM:ss)
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: truckTypeId
+        in: query
+        description: Query parameter truckTypeId ('trucktype' represented by a unique
+          ID)
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/AvailableDays'
+        "400":
+          description: Bad request
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+  /request-estimate:
+    post:
+      tags:
+      - Estimates
+      description: Request a transport estimate
+      requestBody:
+        description: Body of the POST request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimateRequest'
+        required: false
+      responses:
+        "200":
+          description: Successful estimate response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/EstimateResponse'
+        "400":
+          description: response failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: input issue
+                  message:
+                    type: string
+                    description: Error message for the issue
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+      x-codegen-request-body-name: request-estimate request body
+  /accept-estimate:
+    post:
+      tags:
+      - Estimates
+      description: Accept an Estimate
+      requestBody:
+        description: Body of the POST request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcceptEstimateBody'
+        required: false
+      responses:
+        "200":
+          description: Workflow response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/EstimateResponse'
+        "400":
+          description: input failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+      x-codegen-request-body-name: accept-estimate request body
+  /refuse-estimate:
+    post:
+      tags:
+      - Estimates
+      description: Refuse an Estimate
+      requestBody:
+        description: Body of the POST request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefuseEstimateBody'
+        required: false
+      responses:
+        "200":
+          description: Successful estimate response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    $ref: '#/components/schemas/EstimateResponse'
+        "400":
+          description: input failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+      x-codegen-request-body-name: refuse-estimate request body
+  /estimates:
+    get:
+      tags:
+      - Estimates
+      description: Get all estimates
+      parameters:
+      - name: truckTypeId
+        in: query
+        description: Query parameter truckTypeId ('trucktype' represented by a unique
+          ID)
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Query parameter status
+        schema:
+          type: string
+      - name: exactSenderAddr
+        in: query
+        description: Query parameter exactSenderAddr
+        schema:
+          type: string
+      - name: senderName
+        in: query
+        description: Query parameter senderName
+        schema:
+          type: string
+      - name: exactRecipientAddr
+        in: query
+        description: Query parameter exactRecipientAddr
+        schema:
+          type: string
+      - name: recipientName
+        in: query
+        description: Query parameter recipientName
+        schema:
+          type: string
+      - name: senderPhoneNumber
+        in: query
+        description: Query parameter senderPhoneNumber
+        schema:
+          type: string
+      - name: recipientPhoneNumber
+        in: query
+        description: Query parameter recipientPhoneNumber
+        schema:
+          type: string
+      - name: loadingDateFrom
+        in: query
+        description: Query parameter loadingDateFrom
+        schema:
+          type: string
+          format: date-time
+      - name: loadingDateTo
+        in: query
+        description: Query parameter loadingDateTo
+        schema:
+          type: string
+          format: date-time
+      - name: cursor
+        in: query
+        description: Query parameter cursor
+        schema:
+          type: number
+          format: float
+      - name: truckName
+        in: query
+        description: Query parameter truckName
+        schema:
+          type: string
+      - name: articleType
+        in: query
+        description: Query parameter articleType
+        schema:
+          type: string
+      - name: id
+        in: query
+        description: Query parameter id
+        schema:
+          type: string
+      - name: numOrder
+        in: query
+        description: Query parameter numOrder
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    type: object
+                    properties:
+                      cursor:
+                        type: integer
+                        description: Cursor for pagination
+                        example: 0
+                      results:
+                        type: array
+                        description: List of estimates
+                        items:
+                          $ref: '#/components/schemas/EstimateResponse'
+                      count:
+                        type: integer
+                        description: Total number of estimates
+                        example: 20
+                      remaining:
+                        type: integer
+                        description: Number of remaining estimates
+                        example: 15
+        "400":
+          description: Workflow failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+  /authenticate:
+    post:
+      tags:
+      - Authentication
+      description: Authentication
+      requestBody:
+        description: Body of the POST request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateBody'
+        required: false
+      responses:
+        "200":
+          description: Workflow response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: status of the authentication
+                  response:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                      token:
+                        type: string
+                      expires:
+                        type: number
+                        format: float
+        "400":
+          description: authentication failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+      security: []
+      x-codegen-request-body-name: authenticate request body
+  /truck-categories:
+    get:
+      tags:
+      - Data
+      description: Get truck categories
+      parameters:
+      - name: category
+        in: query
+        description: Query parameter category (label of the category)
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of categories
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    type: object
+                    properties:
+                      categories:
+                        type: array
+                        description: List of truck categories
+                        items:
+                          $ref: '#/components/schemas/TruckCategories'
+        "400":
+          description: input failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+  /article-types:
+    get:
+      tags:
+      - Data
+      description: Ge available article-types
+      responses:
+        "200":
+          description: Successful response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    type: object
+                    properties:
+                      articleTypes:
+                        type: array
+                        description: List of available article types
+                        items:
+                          $ref: '#/components/schemas/ArticleTypes'
+        "400":
+          description: input failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+  /truck-types:
+    get:
+      tags:
+      - Data
+      description: Get all truck types
+      parameters:
+      - name: category
+        in: query
+        description: Query parameter category of the truck type (get truck-categories)
+        schema:
+          type: string
+      - name: id
+        in: query
+        description: Query parameter id (unique id of the truck type)
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of truck types
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Response status
+                    example: success
+                  response:
+                    type: object
+                    properties:
+                      results:
+                        type: array
+                        description: List of truck types
+                        items:
+                          $ref: '#/components/schemas/TruckTypes'
+                  count:
+                    type: integer
+                    description: Number of results
+                    example: 5
+        "400":
+          description: input failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+  /checkRateLimits:
+    get:
+      tags:
+      - Throtling
+      description: check the Rate Limits of the user
+      parameters:
+      - name: user
+        in: query
+        description: Query parameter user ('user' represented by a unique ID)
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Workflow response
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  response:
+                    type: object
+                    properties:
+                      checkValid:
+                        type: boolean
+                      callNumber:
+                        type: number
+                        format: float
+                      lastCallTime:
+                        type: string
+        "400":
+          description: Workflow failure
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Outcome of the workflow
+                  message:
+                    type: string
+                    description: Error message for the workflow
+        "401":
+          description: Permission denied
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "405":
+          description: Wrong method
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "429":
+          description: Too many requests
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "500":
+          description: Internal bug. Please file a bug report at bubble.io/support/report
+            with the request that triggers this bug
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Error code
+                  message:
+                    type: string
+                    description: Error message for the operation
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message for the operation
+components:
+  schemas:
+    GeographicAddress:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Formatted address
+        lat:
+          type: number
+          description: Address latitude
+          format: float
+        lng:
+          type: number
+          description: Address longitude
+          format: float
+    EstimateRequest:
+      required:
+      - articleType
+      - exactRecipientAddr
+      - exactSenderAddr
+      - loadingDate
+      - loadingIsFixedHour
+      - recipientAddrPoint
+      - recipientName
+      - recipientPhoneNumber
+      - senderAddrPoint
+      - senderName
+      - senderPhoneNumber
+      - truckNumber
+      - truckTypeId
+      type: object
+      properties:
+        senderAddrPoint:
+          $ref: '#/components/schemas/GeographicAddress'
+        recipientAddrPoint:
+          $ref: '#/components/schemas/GeographicAddress'
+        truckTypeId:
+          type: string
+          description: Identifier for the truck type from GET /truck-types
+          example: 1687874819944x812594600271066900
+        exactSenderAddr:
+          type: string
+          description: Full sender address
+          example: "pharmacie totot, Bouaké, Côte d'ivoire'"
+        senderName:
+          type: string
+          description: Sender name or company
+          example: SENDER NAME
+        senderPhoneNumber:
+          type: string
+          description: Sender phone number
+          example: "0123456789"
+        exactRecipientAddr:
+          type: string
+          description: Full recipient address
+          example: "pharmacie tata, Abidjan, Côte d'ivoire"
+        recipientName:
+          type: string
+          description: Recipient name or company
+          example: RECIPIENT NAME
+        recipientPhoneNumber:
+          type: string
+          description: Recipient phone number
+          example: "0123456789"
+        additionnalInfo:
+          type: string
+        truckNumber:
+          type: integer
+          description: Number of trucks requested
+          example: 2
+        articleType:
+          type: string
+          description: Type/category of transported goods from GET /article-types
+          example: Alimentaire
+        loadingDate:
+          type: string
+          description: Requested loading date (YYYY-MM-DD)
+          format: date
+          example: 2025-10-06
+        loadingIsFixedHour:
+          type: boolean
+          description: Whether loading is at a fixed hour
+          example: true
+        loadingFixedHour:
+          pattern: "^([01]\\\\d|2[0-3]):([0-5]\\\\d)$"
+          type: string
+          description: Fixed loading hour (HH:mm) when loadingIsFixedHour is true
+          example: 13:00
+        loadingTimeSlot:
+          type: string
+          description: Loading time slot range from GET /next-available-days
+          example: 12:00 - 16:00
+        needLoadingAssist:
+          type: boolean
+          description: Whether loading assistance is required
+          example: true
+        needUnloadingAssist:
+          type: boolean
+          description: Whether unloading assistance is required
+          example: false
+        needTailgate:
+          type: boolean
+          description: Whether a tailgate is required
+          example: false
+    EstimateResponse:
+      required:
+      - exactRecipientAddr
+      - exactSenderAddr
+      - id
+      - loadingDate
+      - loadingIsFixedHour
+      - recipientCoordinates
+      - recipientName
+      - recipientPhoneNumber
+      - senderCoordinates
+      - senderName
+      - senderPhoneNumber
+      - status
+      - truckNumber
+      - truckTypeId
+      - truckTypeName
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique estimate identifier
+          example: 1759607930750x141523411231504690
+        estimateNumber:
+          type: string
+          description: Number of the estimate
+          example: IZ-1759607931137
+        status:
+          $ref: '#/components/schemas/EstimateStatus'
+        exactSenderAddr:
+          type: string
+          description: Full sender address
+          example: "pharmacie totot, Bouaké, Côte d'ivoire'"
+        senderCoordinates:
+          pattern: "^-?\\d+(\\.\\d+)?,\\-?\\d+(\\.\\d+)?$"
+          type: string
+          description: "Sender latitude and longitude as 'lat,long'"
+          example: "7.69046600,-5.03905360"
+        senderName:
+          type: string
+          description: Sender name or company
+          example: TEST API
+        senderPhoneNumber:
+          type: string
+          description: Sender phone number
+          example: "0123456789"
+        exactRecipientAddr:
+          type: string
+          description: Full recipient address
+          example: "pharmacie tata, Abidjan, Côte d'ivoire"
+        recipientCoordinates:
+          pattern: "^-?\\d+(\\.\\d+)?,\\-?\\d+(\\.\\d+)?$"
+          type: string
+          description: "Recipient latitude and longitude as 'lat,long'"
+          example: "5.32522580,-4.01960300"
+        recipientName:
+          type: string
+          description: Recipient name or company
+          example: RECIPT API
+        recipientPhoneNumber:
+          type: string
+          description: Recipient phone number
+          example: "0123456789"
+        truckTypeId:
+          type: string
+          description: Identifier for the truck type
+          example: 1687874819944x812594600271066900
+        truckTypeName:
+          type: string
+          description: Human-readable truck type
+          example: Mini
+        articleType:
+          type: string
+          description: Type/category of transported goods
+          example: Alimentaire
+        truckNumber:
+          type: integer
+          description: Number of trucks requested
+          example: 2
+        needLoadingAssist:
+          type: boolean
+          description: Whether loading assistance is required
+          example: true
+        needUnloadingAssist:
+          type: boolean
+          description: Whether unloading assistance is required
+          example: false
+        needTailgate:
+          type: boolean
+          description: Whether a tailgate is required
+          example: false
+        loadingDate:
+          type: string
+          description: Requested loading date (YYYY-MM-DD)
+          format: date
+          example: 2025-10-06
+        loadingIsFixedHour:
+          type: boolean
+          description: Whether loading is at a fixed hour
+          example: true
+        loadingFixedHour:
+          pattern: "^([01]\\\\d|2[0-3]):([0-5]\\\\d)$"
+          type: string
+          description: Fixed loading hour (HH:mm) when loadingIsFixedHour is true
+          example: 13:00
+        loadingTimeSlot:
+          type: string
+          description: Loading time slot range
+          example: 12:00 - 16:00
+        deliveryDate:
+          type: string
+          description: Delivery date (YYYY-MM-DD)
+          format: date
+          example: 2025-07-08
+        deliveryIsFixedHour:
+          type: boolean
+          description: Indicates if the delivery time is fixed
+          example: false
+        deliveryFixedHour:
+          type: string
+          description: Fixed delivery hour (HH:mm)
+          example: ""
+        deliveryTimeSlot:
+          type: string
+          description: Delivery time slot
+          example: 08:00 - 12:00
+        totalPrice:
+          type: integer
+          description: Total price
+          example: 0
+        currency:
+          type: string
+          description: Currency
+          example: FCFA
+        transporters:
+          type: string
+          description: List of transporters
+          example: ""
+    AuthenticateBody:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        grantType:
+          type: string
+    AcceptEstimateBody:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique estimate identifier
+          example: 1759607930750x141523411231504690
+    RefuseEstimateBody:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique estimate identifier
+          example: 1759607930750x141523411231504690
+    TruckTypes:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the truck type
+          example: 1754332058055x251983329664545950
+        name:
+          type: string
+          description: Name of the truck type
+          example: Camion 20 tonnes'
+        width:
+          type: integer
+          description: Width of the truck in cm
+          example: 250
+        length:
+          type: integer
+          description: Length of the truck in cm
+          example: 850
+        height:
+          type: integer
+          description: Height of the truck in cm
+          example: 270
+        volume:
+          type: integer
+          description: Volume of the truck in cubic meters
+          example: 65
+        maxWeight:
+          type: integer
+          description: Maximum weight the truck can carry in kg
+          example: 20000
+        maxPalettes:
+          type: integer
+          description: Maximum number of palettes the truck can carry
+          example: 24
+        category:
+          type: string
+          description: Category of the truck from GET /truck-categories
+          example: Poids lourds (20 à 40T)
+        needLoadingAid:
+          type: boolean
+          description: Indicates if loading aid is needed
+          example: false
+        needUnloadingAid:
+          type: boolean
+          description: Indicates if unloading aid is needed
+          example: false
+        needTailgate:
+          type: boolean
+          description: Indicates if a tailgate is needed
+          example: true
+        image:
+          type: string
+          description: URL of the truck image
+          example: https://c3f6b22f19e36e7e5b81ddcbed94255c.cdn.bubble.io/f1756415796886x716405493775126000/Camion%20de%2020T_2.png
+        description:
+          type: string
+          description: Description of the truck
+          example: "Transport longue distance, marchandises industrielles."
+    TruckCategories:
+      type: string
+      example: "Véhicules utilitaires légers (≤ 3,5 T)"
+      enum:
+      - "Véhicules utilitaires légers (≤ 3,5 T)"
+      - Camions moyens (5 à 15 T)
+      - Poids lourds (20 à 40T)
+      - Camions plateau (20' et 40')
+      - Camions frigorifiques
+    ArticleTypes:
+      type: string
+      example: Agriculture
+      enum:
+      - Agriculture
+      - Alimentaire
+      - BTP
+      - Industrie
+      - Biens divers
+    AvailableDays:
+      type: object
+      properties:
+        holydays:
+          type: array
+          description: Dates that are holidays (no availability)
+          example:
+          - 2025-11-01
+          - 2025-12-25
+          items:
+            type: string
+            format: date
+        truckTypeId:
+          type: string
+          description: Identifier for the truck type
+          example: 1687874819944x812594600271066900
+        availableDates:
+          type: array
+          description: List of available dates for booking (YYYY-MM-DD)
+          example:
+          - 2025-10-06
+          - 2025-10-07
+          - 2025-10-08
+          - 2025-10-09
+          - 2025-10-10
+          - 2025-10-11
+          - 2025-10-13
+          - 2025-10-14
+          - 2025-10-15
+          - 2025-10-16
+          - 2025-10-17
+          - 2025-10-18
+          - 2025-10-20
+          - 2025-10-21
+          - 2025-10-22
+          - 2025-10-23
+          - 2025-10-24
+          - 2025-10-25
+          - 2025-10-27
+          - 2025-10-28
+          - 2025-10-29
+          - 2025-10-30
+          - 2025-10-31
+          - 2025-11-03
+          items:
+            type: string
+            format: date
+        defaultAvailableHours:
+          type: array
+          description: Default hourly time slots (HH:mm)
+          example:
+          - 08:00
+          - 09:00
+          - 10:00
+          - 11:00
+          - 12:00
+          - 13:00
+          - 14:00
+          - 15:00
+          - 16:00
+          - 17:00
+          - 18:00
+          - 19:00
+          - 20:00
+          items:
+            pattern: "^([01]\\d|2[0-3]):([0-5]\\d)$"
+            type: string
+        defaultAvailableSlots:
+          type: array
+          description: Default multi-hour slot ranges
+          example:
+          - 08:00 - 12:00
+          - 12:00 - 16:00
+          - 16:00 - 20:00
+          - 08:00 - 20:00
+          items:
+            type: string
+            example: 08:00 - 12:00
+        firstAvailableDate:
+          type: string
+          description: Earliest available date
+          format: date
+          example: 2025-10-06
+        firstAvailableFixedHours:
+          type: array
+          description: Fixed hours available on the first available date (HH:mm)
+          example:
+          - 10:00
+          - 11:00
+          - 12:00
+          - 13:00
+          - 14:00
+          - 15:00
+          - 16:00
+          - 17:00
+          - 18:00
+          - 19:00
+          - 20:00
+          items:
+            pattern: "^([01]\\d|2[0-3]):([0-5]\\d)$"
+            type: string
+        firstAvailableSlots:
+          type: array
+          description: Slot ranges available on the first available date
+          example:
+          - 08:00 - 12:00
+          - 12:00 - 16:00
+          - 16:00 - 20:00
+          - 08:00 - 20:00
+          items:
+            type: string
+            example: 08:00 - 12:00
+    EstimateStatus:
+      type: string
+      description: Current status of the estimate
+      example: Devis à valider
+      enum:
+      - Devis à valider
+      - Paiement en attente
+      - Devis refusé
+      - Payé Partiellement
+      - Payé Totalement
+  securitySchemes:
+    token:
+      type: apiKey
+      name: Authorization
+      in: header
+x-original-swagger-version: "2.0"
