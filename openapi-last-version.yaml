@@ -5,8 +5,14 @@ info:
     url: https://izivan.co
     email: hello@izivan.co
   version: 1.0.0
+  description: |
+    # Introduction
+    The IZIVAN API is a service provided by IZIVAN, It allows you to request transtport estimates.
 servers:
-- url: https://izivan.co/api/1.1/wf
+  - url: https://izivan.co/api/1.1/wf
+    description: Live
+  - url: https://izivan.co/version-test/api/1.1/wf
+    description: Test
 security:
 - token: []
 tags:
@@ -14,10 +20,10 @@ tags:
   description: Use this to get the token for authentication
 - name: Available Days
   description: Use this to check available days
-- name: Estimates
-  description: Operations related to Estimates
 - name: Data
   description: Use this to get all needed data to send an Estimate
+- name: Estimates
+  description: Operations related to Estimates
 paths:
   /next-available-days:
     get:
@@ -210,8 +216,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -314,8 +320,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -418,8 +424,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -613,8 +619,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -723,8 +729,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -833,8 +839,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -935,8 +941,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -1052,8 +1058,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -1162,8 +1168,8 @@ paths:
                     type: string
                     description: Error message for the operation
         "500":
-          description: Internal bug. Please file a bug report at bubble.io/support/report
-            with the request that triggers this bug
+          description: Internal bug. Please report the bug to hello@izivan.co with
+            the request that triggers this bug
           content:
             '*/*':
               schema:
@@ -1660,6 +1666,7 @@ components:
   securitySchemes:
     token:
       type: apiKey
+      description: token retrieved from Authentication endpoint, e.g Bearer 'token'
       name: Authorization
       in: header
 x-original-swagger-version: "2.0"
