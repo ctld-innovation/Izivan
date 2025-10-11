@@ -7,7 +7,7 @@ info:
   version: 1.0.0
   description: |
     # Introduction
-    The IZIVAN API is a service provided by IZIVAN, It allows you to request transtport estimates.
+    The IZIVAN API is a service provided by IZIVAN, It allows you to request transport estimates.
 servers:
   - url: https://izivan.co/api/1.1/wf
     description: Live
